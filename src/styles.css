@@ -19,6 +19,7 @@
  */
 
 @theme inline {
+  --font-sans: "Manrope", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -59,29 +60,42 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-primary-bright: var(--primary-bright);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-border: var(--glass-border);
+  --color-gold-soft: var(--gold-soft);
+  --color-danger-glow: var(--danger-glow);
+  --shadow-draw: 0 14px 40px color-mix(in oklab, var(--primary) 38%, transparent), inset 0 1px 0 color-mix(in oklab, white 32%, transparent);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.75rem;
+  --background: oklch(0.13 0.045 20);
+  --foreground: oklch(0.98 0.015 85);
+  --card: oklch(0.22 0.065 20 / 68%);
+  --card-foreground: oklch(0.98 0.015 85);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --primary: oklch(0.48 0.19 23);
+  --primary-bright: oklch(0.56 0.21 25);
+  --primary-foreground: oklch(0.98 0.015 85);
+  --secondary: oklch(0.76 0.15 79);
+  --secondary-foreground: oklch(0.18 0.055 23);
+  --muted: oklch(0.26 0.05 22 / 72%);
+  --muted-foreground: oklch(0.83 0.035 75);
+  --accent: oklch(0.76 0.15 79);
+  --accent-foreground: oklch(0.18 0.055 23);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.92 0.03 75 / 22%);
+  --input: oklch(0.98 0.01 80 / 16%);
+  --ring: oklch(0.8 0.16 82);
+  --glass: oklch(0.22 0.055 22 / 46%);
+  --glass-strong: oklch(0.26 0.065 22 / 72%);
+  --glass-border: oklch(0.95 0.02 80 / 24%);
+  --gold-soft: oklch(0.86 0.13 85);
+  --danger-glow: oklch(0.58 0.21 25 / 45%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +154,74 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    min-width: 320px;
+  }
+}
+
+@keyframes orbit-drum {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes counter-orbit {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+@keyframes center-spin {
+  0% { transform: translate(-50%, -50%) scale(.82) rotate(-12deg); filter: blur(2px); }
+  50% { transform: translate(-50%, -54%) scale(1.12) rotate(8deg); filter: blur(0); }
+  100% { transform: translate(-50%, -50%) scale(.9) rotate(-8deg); filter: blur(1px); }
+}
+
+@keyframes result-pop {
+  0% { transform: translate(-50%, -50%) scale(.7); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(1.08); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-8vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(64vh) rotate(420deg); opacity: 0; }
+}
+
+@utility glass-panel {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px) saturate(130%);
+  box-shadow: 0 20px 70px oklch(0.08 0.03 20 / 38%), inset 0 1px 0 oklch(1 0 0 / 12%);
+}
+
+@utility drum-orbit {
+  animation: orbit-drum 24s linear infinite;
+}
+
+@utility drum-orbit-fast {
+  animation: orbit-drum 2.4s linear infinite;
+}
+
+@utility counter-orbit {
+  animation: counter-orbit 24s linear infinite;
+}
+
+@utility counter-orbit-fast {
+  animation: counter-orbit 2.4s linear infinite;
+}
+
+@utility center-spin {
+  animation: center-spin .34s ease-in-out infinite alternate;
+}
+
+@utility result-pop {
+  animation: result-pop .7s cubic-bezier(.18,.89,.32,1.28) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
