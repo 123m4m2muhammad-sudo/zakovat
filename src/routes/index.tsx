@@ -70,9 +70,8 @@ function ZakovatDrum() {
   }, [getAudioContext]);
 
   const playTimerAlarm = useCallback(() => {
-    tone(880, 0.28, 0);
-    tone(880, 0.28, 0.4);
-    tone(1046, 0.55, 0.8);
+    tone(1046, 0.35, 0);
+    tone(1318, 0.45, 0.45);
   }, [tone]);
 
   useEffect(() => {
@@ -163,7 +162,7 @@ function ZakovatDrum() {
       <main className="relative z-10 mx-auto grid min-h-screen w-full max-w-[1400px] items-center gap-5 px-4 py-5 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,0.75fr)] sm:px-7 lg:gap-8 lg:px-10">
           <section className="flex min-w-0 flex-col items-center">
             <div className="relative aspect-square w-full max-w-[min(72vh,720px)]">
-              <div className="absolute inset-[3%] rounded-full border border-glass-border bg-glass shadow-[inset_0_0_70px_oklch(0.91_0.12_82/10%),0_30px_80px_oklch(0.06_0.03_20/60%)] backdrop-blur-md">
+              <div className="absolute inset-[3%] rounded-full border border-glass-border bg-glass shadow-[inset_0_0_70px_oklch(0.91_0.12_82/10%),0_30px_80px_oklch(0.06_0.03_20/60%)] backdrop-blur-xl">
                 <div className="absolute inset-[2.5%] rounded-full border border-secondary/40" />
                 <div className={`absolute inset-[7%] ${isSpinning ? "drum-orbit-fast" : "drum-orbit"}`}>
                   {visibleBalls.map((number, index) => {
@@ -173,11 +172,11 @@ function ZakovatDrum() {
                     const top = (50 + Math.sin(angle) * radius).toFixed(3);
                     const used = history.includes(number);
                     return (
-                      <span key={number} className={`absolute flex size-7 items-center justify-center rounded-full border text-[10px] font-extrabold shadow-lg sm:size-8 sm:text-xs ${isSpinning ? "counter-orbit-fast" : "counter-orbit"} ${used ? "border-glass-border bg-glass text-muted-foreground opacity-25" : "border-secondary/60 bg-foreground text-primary"}`} style={{ left: `${left}%`, top: `${top}%` }}>{number}</span>
+                      <span key={number} className={`absolute flex size-7 items-center justify-center rounded-full border text-[10px] font-extrabold shadow-lg sm:size-8 sm:text-xs ${isSpinning ? "animate-pulse" : ""} ${used ? "border-muted-foreground/20 bg-muted/30 text-muted-foreground/40" : "border-secondary/70 bg-secondary/20 text-secondary"}`} style={{ left: `${left}%`, top: `${top}%` }}>{number}</span>
                     );
                   })}
                 </div>
-                <div className={`absolute left-1/2 top-1/2 flex size-[34%] min-h-28 min-w-28 items-center justify-center rounded-full border-2 border-secondary bg-[radial-gradient(circle_at_35%_28%,var(--gold-soft),var(--secondary)_38%,var(--primary)_100%)] shadow-[0_0_55px_var(--danger-glow),inset_0_2px_5px_oklch(1_0_0/45%)] ${isSpinning ? "center-spin" : hasResult ? "result-pop" : "-translate-x-1/2 -translate-y-1/2"}`}>
+                <div className="absolute left-1/2 top-1/2 flex size-[34%] min-h-28 min-w-28 items-center justify-center rounded-full border-2 border-secondary bg-[radial-gradient(circle_at_35%_25%,oklch(0.98_0.04_95/95%),oklch(0.78_0.14_82/80%))] shadow-[0_0_35px_oklch(0.82_0.14_82/45%),inset_0_0_30px_oklch(0.35_0.05_60/30%)] -translate-x-1/2 -translate-y-1/2">
                   <span aria-live="polite" className="text-[clamp(3rem,8vw,6.8rem)] font-black tabular-nums text-primary-foreground drop-shadow-lg">{displayNumber ?? "?"}</span>
                 </div>
               </div>
@@ -197,7 +196,7 @@ function ZakovatDrum() {
               <h2 className="text-sm font-bold uppercase tracking-[0.16em]">Baraban</h2>
             </div>
             <label htmlFor="number-count" className="mt-6 block text-sm font-medium text-muted-foreground">Raqamlar soni</label>
-            <Input id="number-count" type="number" min={2} max={200} value={count} disabled={isSpinning} onChange={(event) => changeCount(Number(event.target.value))} className="mt-2 h-14 border-glass-border bg-glass-strong text-center text-xl font-bold" />
+            <Input id="number-count" type="number" min={2} max={200} value={count} disabled={isSpinning} onChange={(event) => changeCount(Number(event.target.value))} className="mt-2 h-14 border-glass-border bg-background/40 text-lg" />
             <div className="mt-3 grid grid-cols-5 gap-1.5">
               {PRESETS.map((value) => <Button key={value} type="button" variant={count === value ? "secondary" : "glass"} size="sm" disabled={isSpinning} onClick={() => changeCount(value)} className="px-1">{value}</Button>)}
             </div>
@@ -214,8 +213,8 @@ function ZakovatDrum() {
               <div className="flex items-center gap-2 text-secondary"><Timer className="size-5" /><h2 className="text-sm font-bold uppercase tracking-[0.16em]">Vaqt</h2></div>
               <div className={`my-5 text-center text-[clamp(3.25rem,6vw,5.4rem)] font-extrabold leading-none tabular-nums ${timerState === "done" ? "text-secondary" : "text-foreground"}`}>{formatTime(remaining)}</div>
               <div className="grid grid-cols-2 gap-2">
-                <label className="text-xs text-muted-foreground">Daqiqa<Input type="number" min={0} max={99} value={minutes} disabled={timerState === "running"} onChange={(event) => setMinutes(Math.max(0, Number(event.target.value)))} onBlur={setTimer} className="mt-1 h-11 bg-glass-strong text-center text-foreground" /></label>
-                <label className="text-xs text-muted-foreground">Soniya<Input type="number" min={0} max={59} value={seconds} disabled={timerState === "running"} onChange={(event) => setSeconds(Math.min(59, Math.max(0, Number(event.target.value))))} onBlur={setTimer} className="mt-1 h-11 bg-glass-strong text-center text-foreground" /></label>
+                <label className="text-xs text-muted-foreground">Daqiqa<Input type="number" min={0} max={99} value={minutes} disabled={timerState === "running"} onChange={(event) => setMinutes(Math.min(99, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label>
+                <label className="text-xs text-muted-foreground">Soniya<Input type="number" min={0} max={59} value={seconds} disabled={timerState === "running"} onChange={(event) => setSeconds(Math.min(59, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label>
               </div>
               <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
                 <Button type="button" variant={timerState === "running" ? "glass" : "secondary"} className="h-11" disabled={remaining === 0} onClick={toggleTimer}>
