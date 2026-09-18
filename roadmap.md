@@ -2,4 +2,4 @@
 
 - [x] Build the JIS Zakovat drum and independent timer.
 - [x] Replace the generated campus background with the user-supplied JIS entrance photo.
-- [ ] Verify the full experience on desktop and mobile.
+- [x] Verify the full experience on desktop and mobile.

@@ -194,6 +194,10 @@
   box-shadow: 0 20px 70px oklch(0.08 0.03 20 / 38%), inset 0 1px 0 oklch(1 0 0 / 12%);
 }
 
+@utility campus-overlay {
+  background: linear-gradient(115deg, oklch(0.16 0.08 22 / 92%), oklch(0.25 0.1 25 / 72%), oklch(0.1 0.035 22 / 88%));
+}
+
 @utility drum-orbit {
   animation: orbit-drum 24s linear infinite;
 }

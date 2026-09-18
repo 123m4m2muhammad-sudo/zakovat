@@ -154,7 +154,7 @@ function ZakovatDrum() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <img src={campusAsset.url} alt="JIS maktabi kirish binosi" width={881} height={495} className="fixed inset-0 size-full object-cover scale-105 blur-[4px]" />
-      <div className="fixed inset-0 bg-[linear-gradient(115deg,oklch(0.16_0.08_22/92%),oklch(0.25_0.1_25/72%),oklch(0.1_0.035_22/88%))]" />
+      <div className="campus-overlay fixed inset-0" />
       {hasResult && Array.from({ length: 22 }, (_, index) => (
         <i key={index} className="pointer-events-none fixed top-0 z-40 h-4 w-1 rounded-full bg-secondary" style={{ left: `${6 + (index * 89) / 21}%`, animation: `confetti-fall ${1.8 + (index % 5) * 0.2}s ${index * 0.035}s ease-out both` }} />
       ))}
@@ -205,8 +205,8 @@ function ZakovatDrum() {
                   {visibleBalls.map((number, index) => {
                     const angle = (index / visibleBalls.length) * Math.PI * 2 + (index % 4) * 0.08;
                     const radius = 39 - (index % 5) * 6.2;
-                    const left = 50 + Math.cos(angle) * radius;
-                    const top = 50 + Math.sin(angle) * radius;
+                    const left = (50 + Math.cos(angle) * radius).toFixed(3);
+                    const top = (50 + Math.sin(angle) * radius).toFixed(3);
                     const used = history.includes(number);
                     return (
                       <span key={number} className={`absolute flex size-7 items-center justify-center rounded-full border text-[10px] font-extrabold shadow-lg sm:size-8 sm:text-xs ${isSpinning ? "counter-orbit-fast" : "counter-orbit"} ${used ? "border-glass-border bg-glass text-muted-foreground opacity-35" : "border-secondary/60 bg-foreground text-primary"}`} style={{ left: `${left}%`, top: `${top}%` }}>{number}</span>
