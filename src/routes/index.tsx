@@ -70,8 +70,8 @@ function ZakovatDrum() {
   }, [getAudioContext]);
 
   const playTimerAlarm = useCallback(() => {
-    tone(1046, 0.35, 0);
-    tone(1318, 0.45, 0.45);
+    tone(1046, 5, 0);
+    tone(1318, 5, 0.45);
   }, [tone]);
 
   useEffect(() => {
@@ -137,12 +137,6 @@ function ZakovatDrum() {
     }
   };
 
-  const setTimer = () => {
-    const value = Math.max(0, minutes * 60 + seconds);
-    setRemaining(value);
-    setTimerState("idle");
-  };
-
   const resetTimer = () => {
     setRemaining(Math.max(0, minutes * 60 + seconds));
     setTimerState("idle");
@@ -160,77 +154,46 @@ function ZakovatDrum() {
       <img src={campusAsset.url} alt="JIS maktabi kirish binosi" width={881} height={495} className="fixed inset-0 size-full object-cover scale-105 blur-[4px]" />
       <div className="campus-overlay fixed inset-0" />
       <main className="relative z-10 mx-auto grid min-h-screen w-full max-w-[1400px] items-center gap-5 px-4 py-5 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,0.75fr)] sm:px-7 lg:gap-8 lg:px-10">
-          <section className="flex min-w-0 flex-col items-center">
-            <div className="relative aspect-square w-full max-w-[min(72vh,720px)]">
-              <div className="absolute inset-[3%] rounded-full border border-glass-border bg-glass shadow-[inset_0_0_70px_oklch(0.91_0.12_82/10%),0_30px_80px_oklch(0.06_0.03_20/60%)] backdrop-blur-xl">
-                <div className="absolute inset-[2.5%] rounded-full border border-secondary/40" />
-                <div className={`absolute inset-[7%] ${isSpinning ? "drum-orbit-fast" : "drum-orbit"}`}>
-                  {visibleBalls.map((number, index) => {
-                    const angle = (index / visibleBalls.length) * Math.PI * 2 + (index % 4) * 0.08;
-                    const radius = 39 - (index % 5) * 6.2;
-                    const left = (50 + Math.cos(angle) * radius).toFixed(3);
-                    const top = (50 + Math.sin(angle) * radius).toFixed(3);
-                    const used = history.includes(number);
-                    return (
-                      <span key={number} className={`absolute flex size-7 items-center justify-center rounded-full border text-[10px] font-extrabold shadow-lg sm:size-8 sm:text-xs ${isSpinning ? "animate-pulse" : ""} ${used ? "border-muted-foreground/20 bg-muted/30 text-muted-foreground/40" : "border-secondary/70 bg-secondary/20 text-secondary"}`} style={{ left: `${left}%`, top: `${top}%` }}>{number}</span>
-                    );
-                  })}
-                </div>
-                <div className="absolute left-1/2 top-1/2 flex size-[34%] min-h-28 min-w-28 items-center justify-center rounded-full border-2 border-secondary bg-[radial-gradient(circle_at_35%_25%,oklch(0.98_0.04_95/95%),oklch(0.78_0.14_82/80%))] shadow-[0_0_35px_oklch(0.82_0.14_82/45%),inset_0_0_30px_oklch(0.35_0.05_60/30%)] -translate-x-1/2 -translate-y-1/2">
-                  <span aria-live="polite" className="text-[clamp(3rem,8vw,6.8rem)] font-black tabular-nums text-primary-foreground drop-shadow-lg">{displayNumber ?? "?"}</span>
-                </div>
+        <section className="flex min-w-0 flex-col items-center">
+          <div className="relative aspect-square w-full max-w-[min(72vh,720px)]">
+            <div className="absolute inset-[3%] rounded-full border border-glass-border bg-glass shadow-[inset_0_0_70px_oklch(0.91_0.12_82/10%),0_30px_80px_oklch(0.06_0.03_20/60%)] backdrop-blur-xl">
+              <div className="absolute inset-[2.5%] rounded-full border border-secondary/40" />
+              <div className={`absolute inset-[7%] ${isSpinning ? "drum-orbit-fast" : "drum-orbit"}`}>
+                {visibleBalls.map((number, index) => {
+                  const angle = (index / visibleBalls.length) * Math.PI * 2 + (index % 4) * 0.08;
+                  const radius = 39 - (index % 5) * 6.2;
+                  const left = (50 + Math.cos(angle) * radius).toFixed(3);
+                  const top = (50 + Math.sin(angle) * radius).toFixed(3);
+                  const used = history.includes(number);
+                  return <span key={number} className={`absolute flex size-7 items-center justify-center rounded-full border text-[10px] font-extrabold shadow-lg sm:size-8 sm:text-xs ${isSpinning ? "animate-pulse" : ""} ${used ? "border-muted-foreground/20 bg-muted/30 text-muted-foreground/40" : "border-secondary/70 bg-secondary/20 text-secondary"}`} style={{ left: `${left}%`, top: `${top}%` }}>{number}</span>;
+                })}
+              </div>
+              <div className="absolute left-1/2 top-1/2 flex size-[34%] min-h-28 min-w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-secondary bg-[radial-gradient(circle_at_35%_25%,oklch(0.98_0.04_95/95%),oklch(0.78_0.14_82/80%))] shadow-[0_0_35px_oklch(0.82_0.14_82/45%),inset_0_0_30px_oklch(0.35_0.05_60/30%)]">
+                <span aria-live="polite" className="text-[clamp(3rem,8vw,6.8rem)] font-black tabular-nums text-primary-foreground drop-shadow-lg">{displayNumber ?? "?"}</span>
               </div>
             </div>
-            <div className="min-h-12 text-center">
-              {hasResult && <p className="animate-fade-in text-xl font-bold text-gold-soft sm:text-2xl">Omad yor bo’lsin</p>}
-            </div>
-            <Button type="button" variant="draw" size="projector" onClick={spin} disabled={isSpinning || available.length === 0} className="w-full max-w-sm sm:w-auto">
-              <Sparkles className="size-5" />{isSpinning ? "Aylanmoqda…" : "Aylantirish"}
-            </Button>
-          </section>
-
-          <aside className="grid gap-5 self-center">
-            <section className="glass-panel rounded-2xl p-5">
-            <div className="flex items-center gap-2 text-secondary">
-              <Sparkles className="size-5" />
-              <h2 className="text-sm font-bold uppercase tracking-[0.16em]">Baraban</h2>
-            </div>
+          </div>
+          <div className="min-h-12 text-center">{hasResult && <p className="animate-fade-in text-xl font-bold text-gold-soft sm:text-2xl">Omad yor bo’lsin</p>}</div>
+          <Button type="button" variant="draw" size="projector" onClick={spin} disabled={isSpinning || available.length === 0} className="w-full max-w-sm sm:w-auto"><Sparkles className="size-5" />{isSpinning ? "Aylanmoqda…" : "Aylantirish"}</Button>
+        </section>
+        <aside className="grid gap-5 self-center">
+          <section className="glass-panel rounded-2xl p-5">
+            <div className="flex items-center gap-2 text-secondary"><Sparkles className="size-5" /><h2 className="text-sm font-bold uppercase tracking-[0.16em]">Baraban</h2></div>
             <label htmlFor="number-count" className="mt-6 block text-sm font-medium text-muted-foreground">Raqamlar soni</label>
             <Input id="number-count" type="number" min={2} max={200} value={count} disabled={isSpinning} onChange={(event) => changeCount(Number(event.target.value))} className="mt-2 h-14 border-glass-border bg-background/40 text-lg" />
-            <div className="mt-3 grid grid-cols-5 gap-1.5">
-              {PRESETS.map((value) => <Button key={value} type="button" variant={count === value ? "secondary" : "glass"} size="sm" disabled={isSpinning} onClick={() => changeCount(value)} className="px-1">{value}</Button>)}
-            </div>
-            <div className="mt-5 flex items-center justify-between border-t border-glass-border pt-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Qolgan raqamlar</span>
-                <strong className="text-xl text-secondary">{available.length}</strong>
-              </div>
-              <Button type="button" variant="glass" size="icon" onClick={resetPool} disabled={history.length === 0 && !isSpinning} aria-label="Raqamlarni qayta boshlash"><RotateCcw /></Button>
-            </div>
-            </section>
-
-            <section className="glass-panel rounded-2xl p-5">
-              <div className="flex items-center gap-2 text-secondary"><Timer className="size-5" /><h2 className="text-sm font-bold uppercase tracking-[0.16em]">Vaqt</h2></div>
-              <div className={`my-5 text-center text-[clamp(3.25rem,6vw,5.4rem)] font-extrabold leading-none tabular-nums ${timerState === "done" ? "text-secondary" : "text-foreground"}`}>{formatTime(remaining)}</div>
-              <div className="grid grid-cols-2 gap-2">
-                <label className="text-xs text-muted-foreground">Daqiqa<Input type="number" min={0} max={99} value={minutes} disabled={timerState === "running"} onChange={(event) => setMinutes(Math.min(99, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label>
-                <label className="text-xs text-muted-foreground">Soniya<Input type="number" min={0} max={59} value={seconds} disabled={timerState === "running"} onChange={(event) => setSeconds(Math.min(59, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label>
-              </div>
-              <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
-                <Button type="button" variant={timerState === "running" ? "glass" : "secondary"} className="h-11" disabled={remaining === 0} onClick={toggleTimer}>
-                  {timerState === "running" ? <Pause /> : <Play />}{timerButtonLabel}
-                </Button>
-                <Button type="button" variant="glass" size="icon" className="size-11" onClick={resetTimer} aria-label="Taymerni qayta o‘rnatish"><RotateCcw /></Button>
-              </div>
-            </section>
-          </aside>
+            <div className="mt-3 grid grid-cols-5 gap-1.5">{PRESETS.map((value) => <Button key={value} type="button" variant={count === value ? "secondary" : "glass"} size="sm" disabled={isSpinning} onClick={() => changeCount(value)} className="px-1">{value}</Button>)}</div>
+            <div className="mt-5 flex items-center justify-between border-t border-glass-border pt-4"><div className="flex items-center justify-between text-sm"><span className="text-muted-foreground">Qolgan raqamlar</span><strong className="text-xl text-secondary">{available.length}</strong></div><Button type="button" variant="glass" size="icon" onClick={resetPool} disabled={history.length === 0 && !isSpinning} aria-label="Raqamlarni qayta boshlash"><RotateCcw /></Button></div>
+          </section>
+          <section className="glass-panel rounded-2xl p-5">
+            <div className="flex items-center gap-2 text-secondary"><Timer className="size-5" /><h2 className="text-sm font-bold uppercase tracking-[0.16em]">Vaqt</h2></div>
+            <div className={`my-5 text-center text-[clamp(3.25rem,6vw,5.4rem)] font-extrabold leading-none tabular-nums ${timerState === "done" ? "text-secondary" : "text-foreground"}`}>{formatTime(remaining)}</div>
+            <div className="grid grid-cols-2 gap-2"><label className="text-xs text-muted-foreground">Daqiqa<Input type="number" min={0} max={99} value={minutes} disabled={timerState === "running"} onChange={(event) => setMinutes(Math.min(99, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label><label className="text-xs text-muted-foreground">Soniya<Input type="number" min={0} max={59} value={seconds} disabled={timerState === "running"} onChange={(event) => setSeconds(Math.min(59, Math.max(0, Number(event.target.value))))} className="mt-1 h-11 bg-background/40 text-center text-lg" /></label></div>
+            <div className="mt-4 grid grid-cols-[1fr_auto] gap-2"><Button type="button" variant={timerState === "running" ? "glass" : "secondary"} className="h-11" disabled={remaining === 0} onClick={toggleTimer}>{timerState === "running" ? <Pause /> : <Play />}{timerButtonLabel}</Button><Button type="button" variant="glass" size="icon" className="size-11" onClick={resetTimer} aria-label="Taymerni qayta o‘rnatish"><RotateCcw /></Button></div>
+          </section>
+        </aside>
       </main>
     </div>
   );
 }
 
-declare global {
-  interface Window {
-    webkitAudioContext?: typeof AudioContext;
-  }
-}
+declare global { interface Window { webkitAudioContext?: typeof AudioContext; } }
