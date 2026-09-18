@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { History, Pause, Play, RotateCcw, Sparkles, Timer, Volume2, VolumeX } from "lucide-react";
 
-import campusImage from "@/assets/jis-campus.jpg";
+import campusAsset from "@/assets/jis-campus.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -113,6 +113,10 @@ function ZakovatDrum() {
     setIsSpinning(true);
     setHasResult(false);
     const winner = available[Math.floor(Math.random() * available.length)];
+    if (winner === undefined) {
+      setIsSpinning(false);
+      return;
+    }
     const steps = 24;
     let elapsed = 0;
     drawTimers.current = [];
@@ -120,7 +124,7 @@ function ZakovatDrum() {
       const delay = 50 + Math.pow(step / steps, 3) * 220;
       elapsed += delay;
       const id = window.setTimeout(() => {
-        const candidate = available[Math.floor(Math.random() * available.length)];
+        const candidate = available[Math.floor(Math.random() * available.length)] ?? winner;
         setDisplayNumber(step === steps - 1 ? winner : candidate);
         if (step % 3 === 0) tone(360 + step * 10, 0.06);
         if (step === steps - 1) {
@@ -149,7 +153,7 @@ function ZakovatDrum() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <img src={campusImage} alt="JIS maktabi kirish binosi" width={1920} height={1088} className="fixed inset-0 size-full object-cover scale-105 blur-[4px]" />
+      <img src={campusAsset.url} alt="JIS maktabi kirish binosi" width={881} height={495} className="fixed inset-0 size-full object-cover scale-105 blur-[4px]" />
       <div className="fixed inset-0 bg-[linear-gradient(115deg,oklch(0.16_0.08_22/92%),oklch(0.25_0.1_25/72%),oklch(0.1_0.035_22/88%))]" />
       {hasResult && Array.from({ length: 22 }, (_, index) => (
         <i key={index} className="pointer-events-none fixed top-0 z-40 h-4 w-1 rounded-full bg-secondary" style={{ left: `${6 + (index * 89) / 21}%`, animation: `confetti-fall ${1.8 + (index % 5) * 0.2}s ${index * 0.035}s ease-out both` }} />
